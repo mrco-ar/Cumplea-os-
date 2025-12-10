@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Feliz Cumpleaños Carta</title>
+
+    <!-- Fuente -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Marck+Script&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primario: #ffffff;
+            --fondo: #d7e8ff;
+            --fondo-sobre: #bcd8ff;
+            --solapa-sobre: #8fbaff;
+            --cuerpo-sobre: #6aa5ff;
+            --sombra: rgba(0, 0, 0, 0.3);
+            --texto: #083b7d;
+            --corazon: #4a8fff;
+        }
+
+        body {
+            background: var(--fondo);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            min-height: 100vh;
+            padding-bottom: 80px;
+        }
+
+        h1 {
+            font-family: "Marck Script", serif;
+            text-align: center;
+            font-size: 55px;
+            margin: 40px 0;
+            color: #0d47a1;
+        }
+
+        .contenedor {
+            width: 400px;
+        }
+
+        .envoltura-sobre {
+            position: relative;
+            background-color: var(--fondo-sobre);
+            box-shadow: 0 0 40px var(--sombra);
+            border-radius: 15px;
+        }
+
+        .sobre {
+            position: relative;
+            width: 400px;
+            height: 300px;
+        }
+
+        .sobre::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 4;
+            border-top: 180px solid var(--solapa-sobre);
+            border-right: 200px solid transparent;
+            border-left: 200px solid transparent;
+            transform-origin: top;
+            transition: all 0.5s ease-in-out 0.7s;
+            border-radius: 10px;
+        }
+
+        .solapa-derecha,
+        .solapa-izquierda {
+            position: absolute;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--cuerpo-sobre);
+        }
+
+        .solapa-derecha {
+            right: 0;
+            clip-path: polygon(100% 0, 0 100%, 100% 100%);
+        }
+
+        .solapa-izquierda {
+            left: 0;
+            clip-path: polygon(0 0, 0 100%, 100% 100%);
+        }
+
+        .carta {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--primario);
+            text-align: center;
+            box-shadow: 0 0 5px var(--sombra);
+            padding: 20px;
+            border-radius: 10px;
+            transition: transform .5s ease-in-out;
+        }
+
+        .contenido {
+            font-family: "Gill Sans", Calibri, sans-serif;
+            color: var(--texto);
+            text-align: left;
+            font-size: 12px;
+            border: 3px dotted var(--texto);
+            padding: 10px;
+            height: 100%;
+            line-height: 14px;
+            cursor: pointer;
+            overflow-y: scroll;
+        }
+
+        .corazon {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 30px;
+            height: 30px;
+            background-color: var(--corazon);
+            transform: translate(-50%,0) rotate(45deg);
+            transition: transform 0.5s ease-in-out 1s;
+            z-index: 999;
+            cursor: pointer;
+        }
+
+        .corazon::before,
+        .corazon::after {
+            content: "";
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            background-color: var(--corazon);
+            border-radius: 100%;
+        }
+
+        .corazon:before {
+            top: -15px;
+        }
+
+        .corazon:after {
+            right: 15px;
+        }
+
+        .abierto .sobre::before {
+            transform: rotateX(180deg);
+            z-index: 0;
+        }
+
+        .abierto .corazon {
+            transform: rotate(90deg);
+            transition-delay: 0.4s;
+        }
+
+        .carta.mostrar-carta,
+        .carta.cerrando-carta {
+            transform: translateY(-290px);
+        }
+
+        .carta.abierta {
+            z-index: 10000;
+        }
+
+        @media screen and (max-width: 400px) {
+            .contenedor {
+                width: 300px;
+            }
+            .sobre {
+                width: 300px;
+                height: 250px;
+            }
+            .sobre::before {
+                border-top: 150px solid var(--solapa-sobre);
+                border-right: 150px solid transparent;
+                border-left: 150px solid transparent;
+            }
+        }
+
+        /* ---------------------------- */
+        /* CARRUSEL DE FOTOS */
+        /* ---------------------------- */
+        .carousel {
+            width: 90%;
+            max-width: 400px;
+            height: 230px;
+            margin: 40px auto;
+            overflow: hidden;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.25);
+            position: relative;
+        }
+
+        .carousel img {
+            width: 100%;
+            height: 230px;
+            object-fit: cover;
+            position: absolute;
+            opacity: 0;
+            transition: opacity .6s ease-in-out;
+        }
+
+        .carousel img.active {
+            opacity: 1;
+        }
+
+        .btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 30px;
+            color: white;
+            cursor: pointer;
+            padding: 5px 10px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 8px;
+        }
+
+        .btn.left {
+            left: 10px;
+        }
+
+        .btn.right {
+            right: 10px;
+        }
+
+    </style>
+
+</head>
+<body>
+
+    <h1>¡Feliz Cumpleaños!🩵</h1>
+
+    <div class="contenedor">
+        <div class="envoltura-sobre">
+            
+            <div class="sobre">
+                <div class="carta">
+                    <div class="contenido">
+                        <strong>Para mi niña linda</strong>
+                        <p>
+                            Hoy es un día especial,  
+                            <strong>tu cumpleaños</strong>, el día que el mundo se volvió más bonito  
+                            porque tú llegaste.  
+                            <br><br>
+                            Desde que te conocí, todo se volvió más azul, más brillante,  
+                            más bonito.  
+                            <br><br>
+                            Eres mi lugar favorito.  
+                            Eres la persona  que siempre quiero a mi lado alegras cada dia de mi vida, eres lo mas bonito que tengo en esta vida y espero eso nunca cambie.  
+                            Eres la sonrisa que jamás me canso de ver, los ojos que iluminan mis dias y los cachetes que me quiero comer.  
+                            <br><br>
+                            <strong>Feliz cumpleaños, mi cielo, mi niña linda, mi corazon, mi cachetona hermosa, Mamoor, MI TODOOOO.</strong>  
+                            <br>Con todo mi cariño,  
+                            <br><strong>Aquel que te ama con todo su ser .</strong>
+                            <br><br>
+                            <span style="font-size: 0.9em; color: grey;">PD: Te amoooo MUUUUUUUUUUUCHO🩵🐮</span><br>
+                            <code>"Gracias por existir y hacerme el mas feliz de este mundo."</code>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="corazon"></div>
+            <div class="solapa-derecha"></div>
+            <div class="solapa-izquierda"></div>
+
+        </div>
+    </div>
+
+    <!-- CARRUSEL DE FOTOS -->
+    <div class="carousel">
+        <span class="btn left">&#10094;</span>
+        <span class="btn right">&#10095;</span>
+
+        <!-- IMÁGENES DE EJEMPLO — CAMBIA LAS URL CUANDO TENGAS LAS REALES -->
+        <img class="active" src="2.jpg">
+        <img src="3.jpg">
+        <img src="4.jpg">
+        <img src="5.jpg">
+        <img src="6.jpg">
+        <img src="7.jpg">
+        <img src="8.jpg">
+        <img src="9.jpg">
+    </div>
+
+    <script>
+        const envoltura = document.querySelector(".envoltura-sobre");
+        const carta = document.querySelector(".carta");
+
+        document.addEventListener("click", (e) => {
+
+            if (
+                e.target.matches(".sobre") ||
+                e.target.matches(".solapa-derecha") ||
+                e.target.matches(".solapa-izquierda") ||
+                e.target.matches(".corazon")
+            ) {
+                envoltura.classList.toggle("abierto");
+                envoltura.classList.add("desactivar-sobre");
+
+                if (!carta.classList.contains("abierta")) {
+                    setTimeout(() => {
+                        carta.classList.add("mostrar-carta");
+
+                        setTimeout(() => {
+                            carta.classList.remove("mostrar-carta");
+                            carta.classList.add("abierta");
+                        }, 500);
+                    }, 1000);
+                }
+
+            } else if (e.target.matches(".envoltura-sobre *")) {
+                envoltura.classList.remove("abierto");
+                envoltura.classList.remove("desactivar-sobre");
+
+                if (carta.classList.contains("abierta")) {
+                    carta.classList.add("cerrando-carta");
+
+                    setTimeout(() => {
+                        carta.classList.remove("cerrando-carta");
+                        carta.classList.remove("abierta");
+                    }, 500);
+                }
+            }
+        });
+
+        /* ---------------------------- */
+        /* CÓDIGO DEL CARRUSEL */
+        /* ---------------------------- */
+        const images = document.querySelectorAll(".carousel img");
+        let index = 0;
+
+        function showImage(i) {
+            images.forEach(img => img.classList.remove("active"));
+            images[i].classList.add("active");
+        }
+
+        document.querySelector(".btn.left").onclick = () => {
+            index = (index - 1 + images.length) % images.length;
+            showImage(index);
+        };
+
+        document.querySelector(".btn.right").onclick = () => {
+            index = (index + 1) % images.length;
+            showImage(index);
+        };
+
+        setInterval(() => {
+            index = (index + 1) % images.length;
+            showImage(index);
+        }, 3500);
+
+    </script>
+
+</body>
+</html>
